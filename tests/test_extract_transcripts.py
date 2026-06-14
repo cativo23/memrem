@@ -26,30 +26,33 @@ class TestScrub(unittest.TestCase):
     """Every credential shape must be redacted; legitimate facts must survive.
     NOTE: all secrets below are synthetic, not real."""
 
+    # Synthetic secrets, assembled from FRAGMENTS so no contiguous credential-shaped
+    # literal exists in source. Concatenated at runtime they match our regexes, but the
+    # split source avoids tripping GitHub secret scanning on our own test fixtures.
     REDACTED = [
-        ("openai_hyphen", "sk-abc123def456ghi789jkl"),
-        ("openai_underscore", "sk_abc123def456ghi789jkl"),
-        ("stripe_live", "sk_live_abcd1234efgh5678ijkl"),
-        ("stripe_restricted", "rk_test_abcd1234efgh5678ijkl"),
-        ("slack", "xoxb-1234567890-abcdefghij"),
-        ("github_classic", "ghp_abcdefghijklmnopqrstuvwxyz0123456789"),
-        ("github_fine", "github_pat_11ABCDEFG0123456789_abcdefghijklmnop"),
-        ("sendgrid", "SG.abcdefghij1234567890.abcdefghij1234567890xyz"),
-        ("mailgun", "key-0123456789abcdef0123456789abcdef"),
-        ("aws_access", "AKIAIOSFODNN7EXAMPLE"),
-        ("aws_secret", "aws_secret_access_key = wJalrXUtnFEMIabcdEXAMPLEKEY"),
-        ("google", "AIzaSyA0123456789abcdefghijklmnopqrstu"),
-        ("jwt", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.abcDEF"),
-        ("authorization", "Authorization: Token deadbeef1234"),
-        ("bearer", "Bearer abc.def.ghi"),
-        ("conn_postgres", "postgres://u:p@host:5432/db"),
-        ("basic_auth_url", "https://user:p4ss@host.com/x"),
-        ("env_dbpass", "DB_PASS=supersecret123"),
-        ("env_appkey", "APP_KEY=base64:abcd1234EFGH=="),
-        ("kw_token", "token: abc123def456"),
-        ("hex_blob", "deadbeefdeadbeefdeadbeefdeadbeef0123"),
-        ("email", "carlos@example.com"),
-        ("pem", "-----BEGIN RSA PRIVATE KEY-----\nMIIabc\n-----END RSA PRIVATE KEY-----"),
+        ("openai_hyphen", "sk-" + "abc123def456ghi789jkl"),
+        ("openai_underscore", "sk_" + "abc123def456ghi789jkl"),
+        ("stripe_live", "sk_" + "live_" + "abcd1234efgh5678ijkl"),
+        ("stripe_restricted", "rk_" + "test_" + "abcd1234efgh5678ijkl"),
+        ("slack", "xox" + "b-1234567890-abcdefghij"),
+        ("github_classic", "ghp" + "_abcdefghijklmnopqrstuvwxyz0123456789"),
+        ("github_fine", "github" + "_pat_" + "11ABCDEFG0123456789_abcdefghijklmnop"),
+        ("sendgrid", "SG." + "abcdefghij1234567890." + "abcdefghij1234567890xyz"),
+        ("mailgun", "key-" + "0123456789abcdef" * 2),
+        ("aws_access", "AKIA" + "IOSFODNN7EXAMPLE"),
+        ("aws_secret", "aws_secret_access_key = " + "wJalrXUtnFEMIabcdEXAMPLEKEY"),
+        ("google", "AIza" + "SyA0123456789abcdefghijklmnopqrstu"),
+        ("jwt", "eyJ" + "hbGciOiJIUzI1NiJ9." + "eyJzdWIiOiIxMjM0In0." + "abcDEF"),
+        ("authorization", "Authorization: Token " + "deadbeef1234"),
+        ("bearer", "Bearer " + "abc.def.ghi"),
+        ("conn_postgres", "postgres" + "://u:p@host:5432/db"),
+        ("basic_auth_url", "https://user:" + "p4ss@host.com/x"),
+        ("env_dbpass", "DB_PASS=" + "supersecret123"),
+        ("env_appkey", "APP_KEY=" + "base64:abcd1234EFGH=="),
+        ("kw_token", "token: " + "abc123def456"),
+        ("hex_blob", "deadbeef" * 4 + "0123"),
+        ("email", "carlos@" + "example.com"),
+        ("pem", "-----BEGIN RSA PRIVATE KEY-----\n" + "MIIabc\n" + "-----END RSA PRIVATE KEY-----"),
     ]
 
     PRESERVED = [
@@ -159,7 +162,7 @@ class TestEndToEnd(unittest.TestCase):
                 "message": {
                     "role": "user",
                     "content": [{"type": "tool_result",
-                                 "content": "leaked sk_live_abcd1234efgh5678ijkl here"}],
+                                 "content": "leaked " + "sk_" + "live_" + "abcd1234efgh5678ijkl here"}],
                 },
             }
             (base / "s.jsonl").write_text(json.dumps(line) + "\n")
