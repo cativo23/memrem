@@ -1,0 +1,51 @@
+name: release
+
+# Auto-release when the plugin version changes. Bump `version` in
+# plugins/memrem/.claude-plugin/plugin.json, push to main, and this cuts a
+# tagged GitHub Release (gated on tests passing). No-ops if the tag already exists.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "plugins/memrem/.claude-plugin/plugin.json"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run tests (release gate)
+        run: python -m unittest discover -s tests -v
+
+      - name: Read plugin version
+        id: ver
+        run: |
+          version=$(python -c "import json; print(json.load(open('plugins/memrem/.claude-plugin/plugin.json'))['version'])")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Create release if the tag is new
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.ver.outputs.version }}
+        run: |
+          tag="v${VERSION}"
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release $tag already exists — nothing to do."
+          else
+            echo "Cutting release $tag"
+            gh release create "$tag" \
+              --repo "$GITHUB_REPOSITORY" \
+              --target "$GITHUB_SHA" \
+              --title "$tag" \
+              --generate-notes
+          fi
