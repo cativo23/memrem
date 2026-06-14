@@ -12,6 +12,11 @@ on:
 permissions:
   contents: write
 
+# Never run two releases concurrently; don't cancel a release mid-flight.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
 jobs:
   release:
     runs-on: ubuntu-latest
