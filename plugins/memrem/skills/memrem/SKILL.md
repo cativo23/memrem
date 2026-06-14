@@ -19,12 +19,11 @@ hard-delete).
   Touch nothing else in the repo.
 - **Never hard-delete** a memory. Pruning means *moving to `_archive/` with a tombstone*.
 - **Never write secrets or PHI** into any memory file (see Phase 2 scrub). This is absolute.
-- **Apply by default; confirm only when asked.** The invocation arguments are available as
-  `$ARGUMENTS`. Treat this run as **confirm/dry-run mode** if `$ARGUMENTS` contains the
-  substring `--confirm` or `--dry-run` (case-insensitive); in that mode do everything
-  read-only, present a PLAN, then stop and wait for approval. If `$ARGUMENTS` is empty or has
-  any other value, run in **apply mode** — apply changes directly (the operation is
-  archive-not-delete and the dir is typically git-recoverable, so direct apply is safe).
+- **Mode (apply vs confirm).** This run was invoked with arguments: `$ARGUMENTS`. If those
+  arguments include `--confirm` or `--dry-run`, run in **confirm/dry-run mode**: do everything
+  read-only, present a PLAN, then stop and wait for approval. Otherwise (no such flag), run in
+  **apply mode** — apply changes directly (the operation is archive-not-delete and the dir is
+  typically git-recoverable, so direct apply is safe).
 - **No network, no telemetry, no exfiltration.** Local shell is allowed for *analysis only*
   (`git log`, `ls`, `grep`, `python3` to read/parse transcripts) — but **never** for network
   calls, installing anything, hard-deleting memory, or writing outside the memory dir.
