@@ -23,14 +23,14 @@ Native Claude Code memory accumulates over time: facts duplicate across files, t
 
 ## 3. Positioning (where it fits)
 
-| | Capture tools (`claude-mem`, `claude-memory-compiler`) | Anthropic AutoDream / `/dream` | **`memrem`** |
+| | Capture/recall tools (`claude-mem`, `episodic-memory`) | Anthropic AutoDream / `/dream` | **`memrem`** |
 |---|---|---|---|
-| Job | Capture everything + retrieve | Official consolidation (rolling out) | Consolidate the native markdown memory |
-| Storage | Own SQLite store (`~/.claude-mem/`) | Native | **Native markdown** (`~/.claude/projects/<slug>/memory/`) |
-| Weight | Heavy (npm, tree-sitter, Agent SDK) | Built-in | **Lightweight, no DB, human-readable** |
+| Job | Capture + semantically search conversations | Official consolidation (rolling out) | Consolidate the native markdown memory |
+| Storage | Own SQLite store (`~/.claude-mem/`, `EPISODIC_MEMORY_CONFIG_DIR`) | Native | **Native markdown** (`~/.claude/projects/<slug>/memory/`) |
+| Weight | Heavy (npm/node, MCP server, embeddings) | Built-in | **Lightweight, no DB, human-readable** |
 | Trigger | Session hooks | Idle auto + `/dream` | **On-demand `/memrem`** |
 
-**Niche:** grooming the *native, human-readable* markdown memory. Complementary to capture tools (different files, different storage — verified: `claude-mem` writes only to `~/.claude-mem/`, never to the native memory dir). The distinct `memrem` namespace avoids any future collision with an official consolidation command (an Anthropic `/dream`/"AutoDream" feature is referenced informally but **could not be verified in current docs** — treated as unverified, not asserted).
+**Niche:** grooming the *native, human-readable* markdown memory. Complementary to capture/recall tools (different files, different storage — verified: `claude-mem` writes only to `~/.claude-mem/`, and `obra/episodic-memory` writes to its own SQLite archive under `EPISODIC_MEMORY_CONFIG_DIR`; neither touches the native memory dir. Both *read* the same `*.jsonl` transcripts as memrem, but all read-only — no write contention). The distinct `memrem` namespace avoids any future collision with an official consolidation command (an Anthropic `/dream`/"AutoDream" feature is referenced informally but **could not be verified in current docs** — treated as unverified, not asserted).
 
 This project is built from the general REM-consolidation concept (the same idea Anthropic's AutoDream uses); it does not derive from or credit any third-party implementation.
 
