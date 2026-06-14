@@ -149,13 +149,13 @@ def iter_recent(base: Path, cutoff: float) -> Iterable[Path]:
     return [p for _, p in sorted(paths)]
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("transcripts_dir")
     ap.add_argument("--days", type=int, default=7, help="recency window in days (>= 0)")
     ap.add_argument("--since-epoch", type=float, default=None, help="mtime >= this epoch (overrides --days)")
     ap.add_argument("--max-chars", type=int, default=2000, help="truncate each message to N chars")
-    args = ap.parse_args()
+    args = ap.parse_args(argv)
 
     if args.days < 0:
         print("ERROR: --days must be >= 0", file=sys.stderr)
