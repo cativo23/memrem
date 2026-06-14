@@ -1,0 +1,17 @@
+{
+  "name": "memrem",
+  "description": "REM sleep for Claude Code's native memory — on-demand consolidation: dedupe, resolve contradictions, archive stale facts, and rebuild a lean index.",
+  "owner": {
+    "name": "Carlos Cativo",
+    "email": "cativo23.kt@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "memrem",
+      "source": "./plugins/memrem",
+      "description": "REM sleep for Claude's native memory: consolidate, dedupe, prune, and rebuild the index — idempotent and safe to re-run.",
+      "category": "productivity",
+      "tags": ["memory", "consolidation", "maintenance", "housekeeping"]
+    }
+  ]
+}

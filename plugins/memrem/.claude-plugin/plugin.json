@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "memrem",
+  "version": "0.1.0",
+  "description": "REM sleep for Claude's native memory: on demand, consolidates the markdown memory dir — merges duplicates, resolves contradictions, archives stale facts with tombstones, and rebuilds a lean MEMORY.md index. Idempotent and safe to re-run.",
+  "author": {
+    "name": "Carlos Cativo",
+    "email": "cativo23.kt@gmail.com",
+    "url": "https://github.com/cativo23"
+  },
+  "homepage": "https://github.com/cativo23/memrem",
+  "repository": "https://github.com/cativo23/memrem",
+  "license": "MIT"
+}
